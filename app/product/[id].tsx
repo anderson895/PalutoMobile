@@ -34,7 +34,7 @@ export default function ProductScreen() {
 
   const handleAddToCart = () => {
     for (let i = 0; i < qty; i++) addItem(product);
-    Alert.alert('Added to Cart! 🛒', `${qty}x ${product.name} added.`, [
+    Alert.alert('Added to Cart!', `${qty}x ${product.name} added.`, [
       { text: 'Keep Browsing', style: 'cancel' },
       { text: 'View Cart', onPress: () => router.push('/(tabs)/cart') },
     ]);
@@ -53,16 +53,24 @@ export default function ProductScreen() {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <View style={styles.loadWrap}>
           <Text style={styles.errorText}>Product not found</Text>
-          <TouchableOpacity onPress={() => router.back()}><Text style={styles.backLink}>Go Back</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.backLink}>Go Back</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
+    // edges={['top']} on outer + edges={['bottom']} on footer bar
+    // gives safe insets on both ends without double-padding the content
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Image */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        // Extra bottom padding so content isn't hidden behind the sticky bar
+        contentContainerStyle={{ paddingBottom: 110 }}
+      >
+        {/* Hero Image */}
         <View style={styles.imgWrap}>
           <Image
             source={{ uri: product.image || `https://placehold.co/400x300/1E1E1E/E8462A?text=${encodeURIComponent(product.name)}` }}
@@ -72,9 +80,23 @@ export default function ProductScreen() {
             <Ionicons name="arrow-back" size={20} color={Colors.text} />
           </TouchableOpacity>
           <View style={styles.badges}>
-            {product.isNew && <View style={[styles.badge, styles.badgeNew]}><Text style={styles.badgeText}>✨ NEW</Text></View>}
-            {product.isBestseller && <View style={[styles.badge, styles.badgeGold]}><Text style={styles.badgeText}>⭐ Bestseller</Text></View>}
-            {!product.available && <View style={[styles.badge, styles.badgeGray]}><Text style={styles.badgeText}>Unavailable</Text></View>}
+            {product.isNew && (
+              <View style={[styles.badge, styles.badgeNew]}>
+                <Ionicons name="sparkles-outline" size={10} color="#fff" />
+                <Text style={styles.badgeText}>NEW</Text>
+              </View>
+            )}
+            {product.isBestseller && (
+              <View style={[styles.badge, styles.badgeGold]}>
+                <Ionicons name="star" size={10} color="#fff" />
+                <Text style={styles.badgeText}>Bestseller</Text>
+              </View>
+            )}
+            {!product.available && (
+              <View style={[styles.badge, styles.badgeGray]}>
+                <Text style={styles.badgeText}>Unavailable</Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -88,7 +110,7 @@ export default function ProductScreen() {
           <Text style={styles.name}>{product.name}</Text>
           <Text style={styles.description}>{product.description}</Text>
 
-          {/* Meta */}
+          {/* Meta pills */}
           <View style={styles.metaRow}>
             {product.prepTime && (
               <View style={styles.metaPill}>
@@ -116,11 +138,12 @@ export default function ProductScreen() {
             <Text style={styles.price}>₱{product.price?.toFixed(2)}</Text>
           </View>
 
-          {/* Qty + Cart button */}
+          {/* Qty picker (only when available) */}
           {product.available !== false && (
             <>
               <View style={styles.divider} />
               <View style={styles.qtySection}>
+                <Text style={styles.qtyLabel}>Quantity</Text>
                 <View style={styles.qtyControls}>
                   <TouchableOpacity
                     style={[styles.qtyBtn, qty <= 1 && styles.qtyBtnDisabled]}
@@ -134,10 +157,6 @@ export default function ProductScreen() {
                     <Ionicons name="add" size={18} color={Colors.text} />
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.addBtn} onPress={handleAddToCart}>
-                  <Ionicons name="bag-add-outline" size={18} color="#fff" />
-                  <Text style={styles.addBtnText}>Add to Cart · ₱{(product.price * qty).toFixed(2)}</Text>
-                </TouchableOpacity>
               </View>
               {cartItem && (
                 <View style={styles.inCartNote}>
@@ -159,6 +178,22 @@ export default function ProductScreen() {
           )}
         </View>
       </ScrollView>
+
+      {/* ── Sticky Add-to-Cart bar pinned to safe bottom ─────────────────── */}
+      {product.available !== false && (
+        <SafeAreaView edges={['bottom']} style={styles.cartBar}>
+          <View style={styles.cartBarInner}>
+            <View style={styles.cartBarPrice}>
+              <Text style={styles.cartBarTotal}>₱{(product.price * qty).toFixed(2)}</Text>
+              <Text style={styles.cartBarQty}>{qty} item{qty !== 1 ? 's' : ''}</Text>
+            </View>
+            <TouchableOpacity style={styles.addBtn} onPress={handleAddToCart}>
+              <Ionicons name="bag-add-outline" size={18} color="#fff" />
+              <Text style={styles.addBtnText}>Add to Cart</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      )}
     </SafeAreaView>
   );
 }
@@ -171,9 +206,13 @@ const styles = StyleSheet.create({
 
   imgWrap: { height: 300, position: 'relative' },
   img: { width: '100%', height: '100%' },
-  backBtn: { position: 'absolute', top: 16, left: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
+  backBtn: {
+    position: 'absolute', top: 16, left: 16,
+    width: 38, height: 38, borderRadius: 19,
+    backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center',
+  },
   badges: { position: 'absolute', top: 16, right: 16, gap: 6 },
-  badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   badgeNew: { backgroundColor: Colors.primary },
   badgeGold: { backgroundColor: Colors.gold },
   badgeGray: { backgroundColor: Colors.border },
@@ -186,27 +225,61 @@ const styles = StyleSheet.create({
   description: { fontSize: 14, color: Colors.text2, lineHeight: 22, marginBottom: 16 },
 
   metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
-  metaPill: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20 },
+  metaPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border,
+    paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20,
+  },
   metaText: { fontSize: 12, color: Colors.text2 },
 
-  priceSection: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Colors.card, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: Colors.border, marginBottom: 20 },
+  priceSection: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    backgroundColor: Colors.card, borderRadius: 14, padding: 16,
+    borderWidth: 1, borderColor: Colors.border, marginBottom: 20,
+  },
   priceLabel: { fontSize: 14, color: Colors.text2, fontWeight: '600' },
   price: { fontSize: 28, fontWeight: '800', color: Colors.primary },
 
   divider: { height: 1, backgroundColor: Colors.border, marginBottom: 20 },
 
-  qtySection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  qtyControls: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 },
+  qtySection: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  qtyLabel: { fontSize: 15, fontWeight: '700', color: Colors.text },
+  qtyControls: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8,
+  },
   qtyBtn: { width: 30, height: 30, borderRadius: 8, backgroundColor: Colors.bg2, alignItems: 'center', justifyContent: 'center' },
   qtyBtnDisabled: { opacity: 0.4 },
   qtyNum: { fontSize: 18, fontWeight: '700', color: Colors.text, minWidth: 24, textAlign: 'center' },
-  addBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: Colors.primary, paddingVertical: 14, borderRadius: 12 },
-  addBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
 
-  inCartNote: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
+  inCartNote: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   inCartText: { fontSize: 12, color: Colors.success, flex: 1 },
   viewCartLink: { fontSize: 12, color: Colors.primary, fontWeight: '700' },
 
-  unavailableBanner: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: Colors.card, borderRadius: 12, padding: 14, borderWidth: 1, borderColor: Colors.border },
+  unavailableBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: Colors.card, borderRadius: 12, padding: 14,
+    borderWidth: 1, borderColor: Colors.border,
+  },
   unavailableText: { fontSize: 14, color: Colors.text2 },
+
+  // ── Sticky cart bar ────────────────────────────────────────────────────────
+  cartBar: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    backgroundColor: Colors.card,
+    borderTopWidth: 1, borderTopColor: Colors.border,
+  },
+  cartBarInner: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12,
+  },
+  cartBarPrice: {},
+  cartBarTotal: { fontSize: 18, fontWeight: '800', color: Colors.text },
+  cartBarQty: { fontSize: 12, color: Colors.text2 },
+  addBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: Colors.primary, paddingHorizontal: 24, paddingVertical: 13, borderRadius: 12,
+  },
+  addBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

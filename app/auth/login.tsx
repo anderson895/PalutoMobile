@@ -39,7 +39,6 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Text style={styles.logo}>🍳 Paluto</Text>
             <Text style={styles.title}>Welcome back!</Text>
             <Text style={styles.sub}>Log in to your account</Text>
           </View>
@@ -80,7 +79,10 @@ export default function LoginScreen() {
             </View>
 
             <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
-              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.loginBtnText}>Login</Text>}
+              {loading
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={styles.loginBtnText}>Login</Text>
+              }
             </TouchableOpacity>
 
             <View style={styles.dividerRow}>
@@ -94,7 +96,12 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.secure}>🔒 Secured with Firebase Authentication</Text>
+          {/* Replaced 🔒 emoji with Ionicons */}
+          <View style={styles.secureRow}>
+            <Ionicons name="shield-checkmark-outline" size={12} color={Colors.text3} style={{ marginRight: 5 }} />
+            <Text style={styles.secureText}>Secured with Firebase Authentication</Text>
+          </View>
+
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -104,17 +111,26 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg },
   scroll: { padding: 24, flexGrow: 1 },
-  closeBtn: { alignSelf: 'flex-end', width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.card, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border, marginBottom: 24 },
+  closeBtn: {
+    alignSelf: 'flex-end', width: 36, height: 36, borderRadius: 18,
+    backgroundColor: Colors.card, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: Colors.border, marginBottom: 24,
+  },
 
   header: { alignItems: 'center', marginBottom: 36 },
-  logo: { fontSize: 32, marginBottom: 16 },
+  logoWrap: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 },
+  logoText: { fontSize: 28, fontWeight: '800', color: Colors.text },
   title: { fontSize: 28, fontWeight: '800', color: Colors.text, marginBottom: 6 },
   sub: { fontSize: 15, color: Colors.text2 },
 
   form: { gap: 16 },
   field: { gap: 6 },
   label: { fontSize: 13, fontWeight: '600', color: Colors.text2 },
-  inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12 },
+  inputWrap: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12,
+  },
   inputIcon: { marginRight: 10 },
   input: { flex: 1, color: Colors.text, fontSize: 15 },
   eyeBtn: { padding: 4 },
@@ -126,8 +142,12 @@ const styles = StyleSheet.create({
   dividerLine: { flex: 1, height: 1, backgroundColor: Colors.border },
   dividerText: { fontSize: 12, color: Colors.text3 },
 
-  registerBtn: { backgroundColor: Colors.card, paddingVertical: 15, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
+  registerBtn: {
+    backgroundColor: Colors.card, paddingVertical: 15, borderRadius: 12,
+    alignItems: 'center', borderWidth: 1, borderColor: Colors.border,
+  },
   registerBtnText: { color: Colors.text, fontWeight: '700', fontSize: 15 },
 
-  secure: { textAlign: 'center', fontSize: 11, color: Colors.text3, marginTop: 24 },
+  secureRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 24 },
+  secureText: { fontSize: 11, color: Colors.text3 },
 });
