@@ -130,3 +130,9 @@ This project uses a `.env` file for Firebase configuration. See `.env.example` f
 - Dark theme matching Paluto brand (red #E8462A + dark background)
 - Pull-to-refresh on home and orders screens
 - Cart badge on tab bar
+
+
+
+## LINK
+
+https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/PalutoMobile/builds/f8f7e383-544b-411a-aa97-86ef656f193d
