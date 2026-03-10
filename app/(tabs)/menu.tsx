@@ -95,13 +95,8 @@ export default function MenuScreen() {
   }, [products, search, activeCategory, sortBy]);
 
   const allCats = useMemo(() => [{ id: 'all', name: 'All' }, ...categories], [categories]);
-
   const getCatIcon = (name: string) => CATEGORY_ICONS[name] || DEFAULT_ICON;
 
-  // ─── ListHeaderComponent — rendered once, never causes pill reflow ───────────
-  // Putting the header INSIDE the FlatList means it shares the same scroll
-  // container as the cards. Nothing outside competes for layout space, so
-  // pills are 100% stable regardless of filter/search changes.
   const ListHeader = useCallback(() => (
     <View>
       {/* Top bar */}
@@ -147,7 +142,7 @@ export default function MenuScreen() {
               key={cat.id}
               style={[styles.catPill, {
                 backgroundColor: active ? icon.color + '22' : Colors.card,
-                borderColor:     active ? icon.color       : Colors.border,
+                borderColor:     active ? icon.color        : Colors.border,
               }]}
               onPress={() => setActiveCategory(cat.name === 'All' ? '' : cat.name)}
               activeOpacity={0.75}
@@ -176,7 +171,7 @@ export default function MenuScreen() {
               key={val}
               style={[styles.sortPill, {
                 backgroundColor: active ? Colors.primary : Colors.card,
-                borderColor:     active ? Colors.primary : Colors.border,
+                borderColor:     active ? Colors.primary  : Colors.border,
               }]}
               onPress={() => setSortBy(val)}
               activeOpacity={0.75}
@@ -189,7 +184,7 @@ export default function MenuScreen() {
         })}
       </ScrollView>
 
-      {/* Loading / Empty states live here so they scroll with the header */}
+      {/* Loading / Empty states */}
       {loading && (
         <View style={styles.stateWrap}>
           <ActivityIndicator color={Colors.primary} size="large" />
@@ -225,8 +220,20 @@ export default function MenuScreen() {
             source={{ uri: p.image || `https://placehold.co/300x200/1E1E1E/E8462A?text=${encodeURIComponent(p.name)}` }}
             style={styles.productImg}
           />
-          {p.isBestseller && <View style={styles.badge}><Text style={styles.badgeText}>⭐ Best</Text></View>}
-          {p.isNew && <View style={[styles.badge, styles.badgeNew]}><Text style={styles.badgeText}>✨ NEW</Text></View>}
+          {/* Replaced ⭐ emoji with Ionicons star */}
+          {p.isBestseller && (
+            <View style={styles.badge}>
+              <Ionicons name="star" size={9} color="#fff" />
+              <Text style={styles.badgeText}>Best</Text>
+            </View>
+          )}
+          {/* Replaced ✨ emoji with Ionicons sparkles */}
+          {p.isNew && (
+            <View style={[styles.badge, styles.badgeNew]}>
+              <Ionicons name="sparkles" size={9} color="#fff" />
+              <Text style={styles.badgeText}>NEW</Text>
+            </View>
+          )}
           <TouchableOpacity style={styles.addBtn} onPress={() => addItem(p)}>
             <Ionicons name="add" size={isLarge ? 22 : 18} color="#fff" />
           </TouchableOpacity>
@@ -237,7 +244,13 @@ export default function MenuScreen() {
           <Text style={[styles.productDesc, isLarge && { fontSize: 12 }]} numberOfLines={2}>{p.description}</Text>
           <View style={styles.productFooter}>
             <Text style={[styles.productPrice, isLarge && { fontSize: 17 }]}>₱{p.price?.toFixed(2)}</Text>
-            {p.prepTime && <Text style={[styles.productTime, isLarge && { fontSize: 11 }]}>🕐 {p.prepTime}min</Text>}
+            {/* Replaced 🕐 emoji with Ionicons time */}
+            {p.prepTime && (
+              <View style={styles.prepTimeWrap}>
+                <Ionicons name="time-outline" size={10} color={Colors.text2} />
+                <Text style={[styles.productTime, isLarge && { fontSize: 11 }]}>{p.prepTime}min</Text>
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>
@@ -247,13 +260,11 @@ export default function MenuScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <FlatList
-        // Only remount when column count changes (rotation/resize), NOT on filter changes
         key={`grid-${numColumns}`}
         data={filtered}
         keyExtractor={p => p.id}
         renderItem={renderProduct}
         numColumns={numColumns}
-        // Header contains search + pills — lives inside FlatList, zero layout competition
         ListHeaderComponent={ListHeader}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -285,29 +296,22 @@ const styles = StyleSheet.create({
   searchIcon: { marginRight: 8 },
   searchInput: { flex: 1, color: Colors.text, fontSize: 14 },
 
-  // Shared scroll wrapper for both pill rows — fixed-height, never reflowing
   pillsScroll: { flexGrow: 0, marginBottom: 8 },
   pillsRow: {
-    paddingHorizontal: H_PADDING,
-    gap: 8,
-    flexDirection: 'row',
-    alignItems: 'center',   // stops pills stretching vertically
+    paddingHorizontal: H_PADDING, gap: 8,
+    flexDirection: 'row', alignItems: 'center',
   },
 
   catPill: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     borderRadius: 20, paddingHorizontal: 12, paddingVertical: 7,
-    borderWidth: 1,
-    alignSelf: 'center',    // intrinsic size only — never stretches
-    flexShrink: 0,
+    borderWidth: 1, alignSelf: 'center', flexShrink: 0,
   },
   catPillText: { fontSize: 12, fontWeight: '600' },
 
   sortPill: {
     borderRadius: 16, paddingHorizontal: 12, paddingVertical: 5,
-    borderWidth: 1,
-    alignSelf: 'center',
-    flexShrink: 0,
+    borderWidth: 1, alignSelf: 'center', flexShrink: 0,
   },
   sortPillText: { fontSize: 11, fontWeight: '600' },
 
@@ -329,13 +333,16 @@ const styles = StyleSheet.create({
   },
   productImgWrap: { position: 'relative' },
   productImg: { width: '100%', height: '100%' },
+
   badge: {
     position: 'absolute', top: 8, left: 8,
+    flexDirection: 'row', alignItems: 'center', gap: 3,
     backgroundColor: Colors.gold, borderRadius: 6,
     paddingHorizontal: 5, paddingVertical: 2,
   },
   badgeNew: { backgroundColor: Colors.primary },
   badgeText: { fontSize: 9, fontWeight: '700', color: '#fff' },
+
   addBtn: {
     position: 'absolute', bottom: 8, right: 8,
     width: 32, height: 32, borderRadius: 16,
@@ -350,5 +357,6 @@ const styles = StyleSheet.create({
   productDesc: { fontSize: 11, color: Colors.text2, lineHeight: 15, marginBottom: 8 },
   productFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   productPrice: { fontSize: 15, fontWeight: '700', color: Colors.text },
+  prepTimeWrap: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   productTime: { fontSize: 10, color: Colors.text2 },
 });
