@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,9 +36,14 @@ export default function AccountScreen() {
           <Text style={styles.pageTitle}>Account</Text>
         </View>
         <View style={styles.guestWrap}>
-          <Text style={styles.guestEmoji}>👤</Text>
+          {/* Replaced 👤 emoji with Ionicons */}
+          <View style={styles.guestIconWrap}>
+            <Ionicons name="person-outline" size={48} color={Colors.text3} />
+          </View>
           <Text style={styles.guestTitle}>Welcome to Paluto!</Text>
-          <Text style={styles.guestSub}>Login to track orders, save addresses, and enjoy a personalized experience.</Text>
+          <Text style={styles.guestSub}>
+            Login to track orders, save addresses, and enjoy a personalized experience.
+          </Text>
           <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/auth/login')}>
             <Text style={styles.loginBtnText}>Login</Text>
           </TouchableOpacity>
@@ -60,7 +65,9 @@ export default function AccountScreen() {
         {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{(profile?.name || user?.email || 'U')[0].toUpperCase()}</Text>
+            <Text style={styles.avatarText}>
+              {(profile?.name || user?.email || 'U')[0].toUpperCase()}
+            </Text>
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{profile?.name || 'User'}</Text>
@@ -76,9 +83,9 @@ export default function AccountScreen() {
         <View style={styles.menuSection}>
           <Text style={styles.menuSectionTitle}>My Account</Text>
           <View style={styles.menuCard}>
-            <MenuItem icon="receipt-outline" label="My Orders" onPress={() => router.push('/orders')} />
+            <MenuItem icon="receipt-outline"  label="My Orders"       onPress={() => router.push('/orders')} />
             <View style={styles.menuDivider} />
-            <MenuItem icon="person-outline" label="Edit Profile" onPress={() => router.push('/profile')} />
+            <MenuItem icon="person-outline"   label="Edit Profile"    onPress={() => router.push('/profile')} />
             <View style={styles.menuDivider} />
             <MenuItem icon="location-outline" label="Saved Addresses" onPress={() => router.push('/profile')} />
           </View>
@@ -87,9 +94,9 @@ export default function AccountScreen() {
         <View style={styles.menuSection}>
           <Text style={styles.menuSectionTitle}>Support</Text>
           <View style={styles.menuCard}>
-            <MenuItem icon="help-circle-outline" label="Help & Support" onPress={() => {}} />
+            <MenuItem icon="help-circle-outline"        label="Help & Support" onPress={() => {}} />
             <View style={styles.menuDivider} />
-            <MenuItem icon="information-circle-outline" label="About Paluto" onPress={() => {}} />
+            <MenuItem icon="information-circle-outline" label="About Paluto"   onPress={() => {}} />
           </View>
         </View>
 
@@ -99,7 +106,13 @@ export default function AccountScreen() {
           </View>
         </View>
 
-        <Text style={styles.version}>Paluto v1.0.0 · Made with ❤️ in the Philippines</Text>
+        {/* Replaced ❤️ emoji with Ionicons heart */}
+        <View style={styles.versionRow}>
+          <Text style={styles.version}>Paluto v1.0.0 · Made with </Text>
+          <Ionicons name="heart" size={11} color={Colors.error} />
+          <Text style={styles.version}> in the Philippines</Text>
+        </View>
+
         <View style={{ height: 24 }} />
       </ScrollView>
     </SafeAreaView>
@@ -108,11 +121,16 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg },
+
   topBar: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 },
   pageTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
 
   guestWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 40, marginTop: 60 },
-  guestEmoji: { fontSize: 64, marginBottom: 16 },
+  guestIconWrap: {
+    width: 96, height: 96, borderRadius: 48,
+    backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+  },
   guestTitle: { fontSize: 22, fontWeight: '800', color: Colors.text, marginBottom: 10 },
   guestSub: { fontSize: 14, color: Colors.text2, textAlign: 'center', lineHeight: 20, marginBottom: 28 },
   loginBtn: { width: '100%', backgroundColor: Colors.primary, paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginBottom: 12 },
@@ -140,5 +158,6 @@ const styles = StyleSheet.create({
   menuLabelDanger: { color: Colors.error },
   menuDivider: { height: 1, backgroundColor: Colors.border, marginLeft: 60 },
 
-  version: { textAlign: 'center', fontSize: 11, color: Colors.text3, marginTop: 8, marginBottom: 8 },
+  versionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, marginBottom: 8 },
+  version: { textAlign: 'center', fontSize: 11, color: Colors.text3 },
 });

@@ -32,7 +32,9 @@ export default function CartScreen() {
           <Text style={styles.pageTitle}>My Cart</Text>
         </View>
         <View style={styles.emptyWrap}>
-          <Text style={styles.emptyEmoji}>🛒</Text>
+          <View style={styles.emptyIconWrap}>
+            <Ionicons name="cart-outline" size={48} color={Colors.text3} />
+          </View>
           <Text style={styles.emptyTitle}>Your cart is empty</Text>
           <Text style={styles.emptySub}>Add some delicious Filipino dishes!</Text>
           <TouchableOpacity style={styles.shopBtn} onPress={() => router.push('/(tabs)/menu')}>
@@ -46,7 +48,9 @@ export default function CartScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.topBar}>
-        <Text style={styles.pageTitle}>My Cart <Text style={styles.countText}>({totalItems})</Text></Text>
+        <Text style={styles.pageTitle}>
+          My Cart <Text style={styles.countText}>({totalItems})</Text>
+        </Text>
         <TouchableOpacity onPress={() => Alert.alert('Clear Cart', 'Remove all items?', [
           { text: 'Cancel', style: 'cancel' },
           { text: 'Clear', style: 'destructive', onPress: clearCart },
@@ -72,7 +76,11 @@ export default function CartScreen() {
                 </View>
                 <View style={styles.qtyControls}>
                   <TouchableOpacity style={styles.qtyBtn} onPress={() => updateQty(item.id, item.qty - 1)}>
-                    <Ionicons name={item.qty === 1 ? 'trash-outline' : 'remove'} size={14} color={item.qty === 1 ? Colors.error : Colors.text} />
+                    <Ionicons
+                      name={item.qty === 1 ? 'trash-outline' : 'remove'}
+                      size={14}
+                      color={item.qty === 1 ? Colors.error : Colors.text}
+                    />
                   </TouchableOpacity>
                   <Text style={styles.qtyNum}>{item.qty}</Text>
                   <TouchableOpacity style={styles.qtyBtn} onPress={() => updateQty(item.id, item.qty + 1)}>
@@ -95,13 +103,17 @@ export default function CartScreen() {
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Delivery Fee</Text>
             {deliveryFee === 0 ? (
-              <Text style={styles.freeDelivery}>✨ FREE</Text>
+              <View style={styles.freeDeliveryBadge}>
+                <Ionicons name="checkmark-circle" size={14} color={Colors.success} />
+                <Text style={styles.freeDelivery}>FREE</Text>
+              </View>
             ) : (
               <Text style={styles.summaryValue}>₱{deliveryFee}</Text>
             )}
           </View>
           {deliveryFee > 0 && (
             <View style={styles.freeDeliveryNote}>
+              <Ionicons name="information-circle-outline" size={14} color={Colors.success} style={{ marginRight: 6 }} />
               <Text style={styles.freeDeliveryNoteText}>
                 Add ₱{(500 - subtotal).toFixed(2)} more for free delivery
               </Text>
@@ -134,20 +146,31 @@ export default function CartScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg },
-  topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 },
+
+  topBar: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12,
+  },
   pageTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   countText: { color: Colors.text2, fontWeight: '600' },
   clearText: { fontSize: 13, color: Colors.error, fontWeight: '600' },
 
   emptyWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 40 },
-  emptyEmoji: { fontSize: 64, marginBottom: 16 },
+  emptyIconWrap: {
+    width: 96, height: 96, borderRadius: 48,
+    backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+  },
   emptyTitle: { fontSize: 20, fontWeight: '700', color: Colors.text, marginBottom: 8 },
   emptySub: { fontSize: 14, color: Colors.text2, marginBottom: 24 },
   shopBtn: { backgroundColor: Colors.primary, paddingHorizontal: 28, paddingVertical: 12, borderRadius: 12 },
   shopBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 
   scroll: { flex: 1 },
-  itemsCard: { margin: 16, backgroundColor: Colors.card, borderRadius: 16, borderWidth: 1, borderColor: Colors.border, overflow: 'hidden' },
+  itemsCard: {
+    margin: 16, backgroundColor: Colors.card, borderRadius: 16,
+    borderWidth: 1, borderColor: Colors.border, overflow: 'hidden',
+  },
   cartItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
   itemImg: { width: 64, height: 64, borderRadius: 10 },
   itemInfo: { flex: 1 },
@@ -155,25 +178,44 @@ const styles = StyleSheet.create({
   itemCat: { fontSize: 11, color: Colors.primary, fontWeight: '600', marginBottom: 4 },
   itemPrice: { fontSize: 14, fontWeight: '700', color: Colors.text },
   qtyControls: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  qtyBtn: { width: 28, height: 28, borderRadius: 8, backgroundColor: Colors.bg2, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border },
+  qtyBtn: {
+    width: 28, height: 28, borderRadius: 8,
+    backgroundColor: Colors.bg2, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: Colors.border,
+  },
   qtyNum: { fontSize: 14, fontWeight: '700', color: Colors.text, minWidth: 20, textAlign: 'center' },
   divider: { height: 1, backgroundColor: Colors.border, marginHorizontal: 14 },
 
-  summaryCard: { marginHorizontal: 16, backgroundColor: Colors.card, borderRadius: 16, borderWidth: 1, borderColor: Colors.border, padding: 16, gap: 10 },
+  summaryCard: {
+    marginHorizontal: 16, backgroundColor: Colors.card, borderRadius: 16,
+    borderWidth: 1, borderColor: Colors.border, padding: 16, gap: 10,
+  },
   summaryTitle: { fontSize: 16, fontWeight: '700', color: Colors.text, marginBottom: 4 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   summaryLabel: { fontSize: 14, color: Colors.text2 },
   summaryValue: { fontSize: 14, color: Colors.text, fontWeight: '600' },
+  freeDeliveryBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   freeDelivery: { fontSize: 14, color: Colors.success, fontWeight: '700' },
-  freeDeliveryNote: { backgroundColor: 'rgba(34,197,94,0.08)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 },
-  freeDeliveryNoteText: { fontSize: 12, color: Colors.success },
+  freeDeliveryNote: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(34,197,94,0.08)', borderRadius: 8,
+    paddingHorizontal: 10, paddingVertical: 6,
+  },
+  freeDeliveryNoteText: { fontSize: 12, color: Colors.success, flex: 1 },
   totalLabel: { fontSize: 16, fontWeight: '700', color: Colors.text },
   totalValue: { fontSize: 18, fontWeight: '800', color: Colors.primary },
 
-  checkoutBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: Colors.card, borderTopWidth: 1, borderTopColor: Colors.border, padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  checkoutBar: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    backgroundColor: Colors.card, borderTopWidth: 1, borderTopColor: Colors.border,
+    padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+  },
   checkoutInfo: {},
   checkoutTotal: { fontSize: 18, fontWeight: '800', color: Colors.text },
   checkoutItems: { fontSize: 12, color: Colors.text2 },
-  checkoutBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: Colors.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  checkoutBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: Colors.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12,
+  },
   checkoutBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });
