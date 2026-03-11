@@ -141,3 +141,17 @@ npm install -g eas-cli
 eas login
 eas build:configure
 npx eas build -p android --profile preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_API_KEY --value "????" --visibility sensitive --environment preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN --value "????" --visibility sensitive --environment preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_PROJECT_ID --value "????" --visibility sensitive --environment preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET --value "????" --visibility sensitive --environment preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID --value "????" --visibility sensitive --environment preview
+
+eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_APP_ID --value "????" --visibility sensitive --environment preview
+
+https://drive.google.com/file/d/1kGeFTRQORIjEBaC_8NFqGT11NA9_vCD3/view?usp=sharing
