@@ -106,7 +106,7 @@ export default function AccountScreen() {
           </View>
         </View>
 
-        {/* Replaced ❤️ emoji with Ionicons heart */}
+       
         <View style={styles.versionRow}>
           <Text style={styles.version}>Paluto v1.0.0 · Made with </Text>
           <Ionicons name="heart" size={11} color={Colors.error} />
