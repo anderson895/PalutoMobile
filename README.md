@@ -154,4 +154,4 @@ eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID -
 
 eas env:create --scope project --name EXPO_PUBLIC_FIREBASE_APP_ID --value "????" --visibility sensitive --environment preview
 
-https://drive.google.com/file/d/1kGeFTRQORIjEBaC_8NFqGT11NA9_vCD3/view?usp=sharing
+https://drive.google.com/file/d/1yR2MoVaCLHzKfiIwxhrDGvzjSy16W0HK/view?usp=sharing
